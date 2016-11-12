@@ -5,6 +5,19 @@ from z3 import *
 
 DEBUG = False
 
+'''
+TODO list:
+    1. finish b
+    2. check inputs:
+        a. can we assume V = range(..) or can V be something like [1,6,7,20] ?
+        b. check Edges
+        c. are self-edges allowed? (.. (1,1) ) - if yes, make sure code deals with them
+        d. what about multi-edges? are we dealing with them?
+    3. ask on forum if there's a meaning to a directed graph?
+    4. few more tests to a - including printing of graph
+'''
+
+
 Petersen_V = range(10)
 Petersen_E = [
     (0, 1),
@@ -127,4 +140,7 @@ if __name__ == '__main__':
     print("simple test graph: k=2 V=[0,1,2,3], E= [(0, 1), (0,2)]")
     print(get_k_edge_coloring(2, range(4), [(0, 1), (0, 2)]))
     print
+
+
+    #draw_graph(Petersen_V,Petersen_E, get_k_edge_coloring(4,Petersen_V,Petersen_E))
     pass
