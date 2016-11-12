@@ -17,30 +17,13 @@ TODO list:
     4. few more tests to a - including printing of graph
 '''
 
-
-Petersen_V = range(10)
-Petersen_E = [
-    (0, 1),
-    (1, 2),
-    (2, 3),
-    (3, 4),
-    (4, 0),
-
-    (0, 5),
-    (1, 6),
-    (2, 7),
-    (3, 8),
-    (4, 9),
-
-    (5, 7),
-    (7, 9),
-    (9, 6),
-    (6, 8),
-    (8, 5),
-]
-
-
 def get_k_edge_coloring(k, V, E):
+    return get_k_edge_coloring_main(k, V, E)
+
+def get_k_edge_coloring_core(k, V, E):
+    return get_k_edge_coloring_main(k, V, E, True)
+
+def get_k_edge_coloring_main(k, V, E, returnCore = False):
     assert V == range(len(V))
     colors = range(k)
     EdgeNumbers = range(len(E))
@@ -61,12 +44,14 @@ def get_k_edge_coloring(k, V, E):
                          Not(variables[e][c2])))
 
     # every edge has different colors from it's neighbours
+    edge_variables = [Bool(str(i)) for i in range(len(E))]
     for e in EdgeNumbers:
         v1, v2 = E[e]
-        for i in range(e+1, len(EdgeNumbers)):
+        for i in range(e + 1, len(EdgeNumbers)):
             if (v1 in E[i]) or (v2 in E[i]):
                 for c in colors:
-                    s.add(Or(Not(variables[e][c]),
+                    s.add(Or(Not(edge_variables[e]),
+                             Not(variables[e][c]),
                              Not(variables[i][c])))
     if DEBUG:
         print "Solver is:"
@@ -74,11 +59,22 @@ def get_k_edge_coloring(k, V, E):
         print
 
         print "Checking SAT"
-    res = s.check()
+    res = s.check(edge_variables)
 
     if res == unsat or res == unknown:
+        if returnCore and res == unsat:
+            core = s.unsat_core()
+            coloring = {}
+            for x in core:
+                i = int(str(x))
+                coloring[E[i]] = 1
+
+            if DEBUG:
+                print "UNSAT core:", core
+            return coloring
+
         if DEBUG:
-            print("UNSAT, No K coloring" if res == unsat else "UNKNOWN")
+            print("UNKNOWN")
         return None
 
     assert res == sat
@@ -94,13 +90,7 @@ def get_k_edge_coloring(k, V, E):
     return coloring
 
 
-
-def get_k_edge_coloring_core(k, V, E):
-    #
-    # Your solution here...
-    #
     pass
-
 
 def draw_graph(V, E, coloring={}, filename='graph', engine='circo', directed=False):
     try:
@@ -127,6 +117,27 @@ def draw_graph(V, E, coloring={}, filename='graph', engine='circo', directed=Fal
     dot.render(filename, cleanup=True, view=True)
 
 
+Petersen_V = range(10)
+Petersen_E = [
+    (0, 1),
+    (1, 2),
+    (2, 3),
+    (3, 4),
+    (4, 0),
+
+    (0, 5),
+    (1, 6),
+    (2, 7),
+    (3, 8),
+    (4, 9),
+
+    (5, 7),
+    (7, 9),
+    (9, 6),
+    (6, 8),
+    (8, 5),
+]
+
 if __name__ == '__main__':
 
     print("Peterson 4 col:")
@@ -137,10 +148,15 @@ if __name__ == '__main__':
     print(get_k_edge_coloring(3, Petersen_V, Petersen_E))
     print
 
-    print("simple test graph: k=2 V=[0,1,2,3], E= [(0, 1), (0,2)]")
-    print(get_k_edge_coloring(2, range(4), [(0, 1), (0, 2)]))
+    k = 2
+    V = range(4)
+    E = [(0, 1), (0, 2), (3, 4)]
+    print("simple test graph: k={} V={}, E= {}".format(k,V,E))
+    print(get_k_edge_coloring(k, V, E))
     print
 
 
     #draw_graph(Petersen_V,Petersen_E, get_k_edge_coloring(4,Petersen_V,Petersen_E))
     pass
+
+
