@@ -7,14 +7,13 @@ DEBUG = False
 
 '''
 TODO list:
-    1. finish b
     2. check inputs:
         a. can we assume V = range(..) or can V be something like [1,6,7,20] ?
         b. check Edges
         c. are self-edges allowed? (.. (1,1) ) - if yes, make sure code deals with them
         d. what about multi-edges? are we dealing with them?
     3. ask on forum if there's a meaning to a directed graph?
-    4. few more tests to a - including printing of graph
+    4. few more tests to both a & b
 '''
 
 def get_k_edge_coloring(k, V, E):
@@ -50,7 +49,8 @@ def get_k_edge_coloring_main(k, V, E, returnCore = False):
         for i in range(e + 1, len(EdgeNumbers)):
             if (v1 in E[i]) or (v2 in E[i]):
                 for c in colors:
-                    s.add(Or(Not(edge_variables[e]),
+                    s.add(Or(Not(edge_variables[(e)]),
+                             Not(edge_variables[(i)]),
                              Not(variables[e][c]),
                              Not(variables[i][c])))
     if DEBUG:
@@ -145,16 +145,17 @@ if __name__ == '__main__':
     print
 
     print("Peterson 3 col:")
-    print(get_k_edge_coloring(3, Petersen_V, Petersen_E))
+    print(get_k_edge_coloring_core(3, Petersen_V, Petersen_E))
     print
+    #draw_graph(Petersen_V, Petersen_E, get_k_edge_coloring_core(3, Petersen_V, Petersen_E))
 
     k = 2
     V = range(4)
-    E = [(0, 1), (0, 2), (3, 4)]
+    E = [(0, 1), (0, 2), (3, 4), (1,2)]
     print("simple test graph: k={} V={}, E= {}".format(k,V,E))
-    print(get_k_edge_coloring(k, V, E))
+    print(get_k_edge_coloring_core(k, V, E))
     print
-
+    #draw_graph(V, E, get_k_edge_coloring_core(k, V, E))
 
     #draw_graph(Petersen_V,Petersen_E, get_k_edge_coloring(4,Petersen_V,Petersen_E))
     pass
