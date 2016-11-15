@@ -8,11 +8,11 @@ DEBUG = False
 '''
 TODO list:
     2. check inputs:
-        a. can we assume V = range(..) or can V be something like [1,6,7,20] ?
-        b. check Edges
-        c. are self-edges allowed? (.. (1,1) ) - if yes, make sure code deals with them
-        d. what about multi-edges? are we dealing with them?
-    3. ask on forum if there's a meaning to a directed graph?
+        a. can we assume V = range(..) or can V be something like [1,6,7,20] ? : Done
+        b. check Edges : Done
+        c. are self-edges allowed? (.. (1,1) ) - if yes, make sure code deals with them : Done
+        d. what about multi-edges? are we dealing with them? : TODO
+    3. ask on forum if there's a meaning to a directed graph? : NO
     4. few more tests to both a & b
 '''
 
@@ -138,26 +138,80 @@ Petersen_E = [
     (8, 5),
 ]
 
+self_edge_graph_V = range(3)
+self_edge_graph_E = [
+    (0, 1),
+    (0, 0),
+
+    (1, 2),
+    (1, 1),
+
+    (2, 0),
+    (2, 2),
+
+]
+
+multigraph_V = range(3)
+multigraph_E = [
+    (0, 1),
+    (0, 1),
+    (0, 1),
+
+    (1, 2),
+    (1, 2),
+    (1, 2),
+
+    (2, 0),
+    (2, 0),
+    (2, 0),
+
+]
+
 if __name__ == '__main__':
 
-    print("Peterson 4 col:")
-    print(get_k_edge_coloring(4,Petersen_V,Petersen_E))
-    print
+    #print("Peterson 4 col:")
+    #print(get_k_edge_coloring(4,Petersen_V,Petersen_E))
+    #print
+    #draw_graph(Petersen_V, Petersen_E, get_k_edge_coloring(4, Petersen_V, Petersen_E))
 
-    print("Peterson 3 col:")
-    print(get_k_edge_coloring_core(3, Petersen_V, Petersen_E))
-    print
+
+    #print("Peterson 3 col:")
+    #print(get_k_edge_coloring_core(3, Petersen_V, Petersen_E))
+    #print
     #draw_graph(Petersen_V, Petersen_E, get_k_edge_coloring_core(3, Petersen_V, Petersen_E))
 
-    k = 2
-    V = range(4)
-    E = [(0, 1), (0, 2), (3, 4), (1,2)]
-    print("simple test graph: k={} V={}, E= {}".format(k,V,E))
-    print(get_k_edge_coloring_core(k, V, E))
-    print
+    #k = 2
+    #V = range(4)
+    #E = [(0, 1), (0, 2), (3, 4), (1,2)]
+    #print("simple test graph: k={} V={}, E= {}".format(k,V,E))
+    #print(get_k_edge_coloring_core(k, V, E))
+    #print
     #draw_graph(V, E, get_k_edge_coloring_core(k, V, E))
 
-    #draw_graph(Petersen_V,Petersen_E, get_k_edge_coloring(4,Petersen_V,Petersen_E))
+    #################### Self edge graph test ###################
+    #print("self edge graph 3 col:")
+    #print(get_k_edge_coloring(3,self_edge_graph_V,self_edge_graph_E))
+    #print
+    #draw_graph(self_edge_graph_V, self_edge_graph_E, get_k_edge_coloring(3, self_edge_graph_V, self_edge_graph_E))
+
+
+    #print("self edge graph 2 col:")
+    #print(get_k_edge_coloring_core(2, self_edge_graph_V,self_edge_graph_E))
+    #print
+    #draw_graph(self_edge_graph_V,self_edge_graph_E, get_k_edge_coloring_core(2, self_edge_graph_V,self_edge_graph_E))
+
+    #################### multigraph test ###################
+    print("multigraph 9 col:")
+    print(get_k_edge_coloring(9,multigraph_V,multigraph_E))
+    print
+    #draw_graph(multigraph_V, multigraph_E, get_k_edge_coloring(9, multigraph_V, multigraph_E))
+
+
+    #print("multigraph 8 col:")
+    #print(get_k_edge_coloring_core(8, multigraph_V, multigraph_E))
+    #print
+    #draw_graph(multigraph_V, multigraph_E, get_k_edge_coloring_core(8, multigraph_V, multigraph_E))
+
     pass
 
 
