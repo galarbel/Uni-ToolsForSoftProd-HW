@@ -13,7 +13,7 @@ example_problem = dict(
 )
 
 simple_example = dict (
-    nc = 2,
+    nc = 3,
     np = 1,
     na = 1,
     src = [0],
@@ -136,9 +136,6 @@ def get_transport_plan(nc, np, na, src, dst, start):
         if res == sat:
             return prepare_sol(s, curr_max_time,np,nc,na,packageAtCity,planeAtCity,packageOnPlane)
 
-        if curr_max_time == 4:
-            print s
-
         curr_max_time = curr_max_time + 1
 
     return sol
@@ -215,14 +212,24 @@ def add_turn_constraints(nc,np,na,packageAtCity, packageOnPlane,planeAtCity, cur
                              )
                              ))
 
-        #for some reason this constraint doesn't work :( pretty sure this is the only thing missing....
+        #for some reason this doesn't work :( pretty sure this is the only thing missing....
 
-        if False:
-            for plane in range(na):
-                for city in range(nc):
-                    for other_city in range(city,nc):
-                        if city != other_city:
-                            s.add(If(planeAtCity[time][plane][city], Not(planeAtCity[time][plane][other_city]),planeAtCity[time][plane][city]))
+
+
+    for time in range(1, curr_max_time):
+        for plane in range(na):
+            for city in range(nc):
+                for other_city in range(city, nc):
+                    if city != other_city:
+                        s.add(If(planeAtCity[time][plane][city], Not(planeAtCity[time][plane][other_city]),Not(planeAtCity[time][plane][city])))
+
+    if False:
+        for time in range(1, curr_max_time):
+            for pckg in range(np):
+                for plane in range(na):
+                    for other_plane in range(plane, na):
+                        if plane != other_plane:
+                            s.add(If(packageOnPlane[time][pckg][plane], Not(packageOnPlane[time][pckg][other_plane]),Not(packageOnPlane[time][pckg][plane])))
 
     return
 
@@ -264,7 +271,7 @@ if __name__ == '__main__':
 
     #print_problem (**simple_example)
 
-    sol = get_transport_plan(**simple_example)
+    sol = get_transport_plan(**example_problem)
     if sol != None:
         city_airplanes = sol.get('city_airplanes')
         city_packages = sol.get('city_packages')
