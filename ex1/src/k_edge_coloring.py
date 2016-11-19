@@ -5,17 +5,6 @@ from z3 import *
 
 DEBUG = False
 
-'''
-TODO list:
-    2. check inputs:
-        a. can we assume V = range(..) or can V be something like [1,6,7,20] ? : Done
-        b. check Edges : Done
-        c. are self-edges allowed? (.. (1,1) ) - if yes, make sure code deals with them : Done
-        d. what about multi-edges? are we dealing with them? : TODO
-    3. ask on forum if there's a meaning to a directed graph? : NO
-    4. few more tests to both a & b
-'''
-
 def get_k_edge_coloring(k, V, E):
     return get_k_edge_coloring_main(k, V, E)
 
@@ -138,35 +127,6 @@ Petersen_E = [
     (8, 5),
 ]
 
-self_edge_graph_V = range(3)
-self_edge_graph_E = [
-    (0, 1),
-    (0, 0),
-
-    (1, 2),
-    (1, 1),
-
-    (2, 0),
-    (2, 2),
-
-]
-
-multigraph_V = range(3)
-multigraph_E = [
-    (0, 1),
-    (0, 1),
-    (0, 1),
-
-    (1, 2),
-    (1, 2),
-    (1, 2),
-
-    (2, 0),
-    (2, 0),
-    (2, 0),
-
-]
-
 if __name__ == '__main__':
 
     #print("Peterson 4 col:")
@@ -187,30 +147,6 @@ if __name__ == '__main__':
     #print(get_k_edge_coloring_core(k, V, E))
     #print
     #draw_graph(V, E, get_k_edge_coloring_core(k, V, E))
-
-    #################### Self edge graph test ###################
-    #print("self edge graph 3 col:")
-    #print(get_k_edge_coloring(3,self_edge_graph_V,self_edge_graph_E))
-    #print
-    #draw_graph(self_edge_graph_V, self_edge_graph_E, get_k_edge_coloring(3, self_edge_graph_V, self_edge_graph_E))
-
-
-    #print("self edge graph 2 col:")
-    #print(get_k_edge_coloring_core(2, self_edge_graph_V,self_edge_graph_E))
-    #print
-    #draw_graph(self_edge_graph_V,self_edge_graph_E, get_k_edge_coloring_core(2, self_edge_graph_V,self_edge_graph_E))
-
-    #################### multigraph test ###################
-    print("multigraph 9 col:")
-    print(get_k_edge_coloring(9,multigraph_V,multigraph_E))
-    print
-    #draw_graph(multigraph_V, multigraph_E, get_k_edge_coloring(9, multigraph_V, multigraph_E))
-
-
-    #print("multigraph 8 col:")
-    #print(get_k_edge_coloring_core(8, multigraph_V, multigraph_E))
-    #print
-    #draw_graph(multigraph_V, multigraph_E, get_k_edge_coloring_core(8, multigraph_V, multigraph_E))
 
     pass
 
