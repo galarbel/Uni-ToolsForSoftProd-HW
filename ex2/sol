@@ -1,0 +1,17 @@
+program comp_quot.c
+
+Line to run: 
+ ~/bin/cbmc comp_quot.c --function compute_quotient --div-by-zero-check
+
+The fix: 
+adding if to check that y unequal to zero.
+
+
+program comp_rem.c
+
+Line to run:
+~/bin/cbmc comp_rem.c --function compute_remainder --div-by-zero-check
+
+The fix:
+adding if to check that y unequal to zero.
+
