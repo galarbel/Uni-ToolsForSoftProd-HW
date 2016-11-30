@@ -1,17 +1,48 @@
 program comp_quot.c
 
 Line to run: 
- ~/bin/cbmc comp_quot.c --function compute_quotient --div-by-zero-check
+cbmc comp_quot.c --function compute_quotient --div-by-zero-check --trace
+cbmc comp_quot.c --function compute_quotient  --signed-overflow-check --trace
 
-The fix: 
-adding if to check that y unequal to zero.
+fix: 
+1. Check that y unequal to zero.
+2. Check x != -2147483648 || y != -1
 
+#########################
 
 program comp_rem.c
 
 Line to run:
-~/bin/cbmc comp_rem.c --function compute_remainder --div-by-zero-check
+cbmc comp_rem.c --function compute_remainder --div-by-zero-check --trace
 
 The fix:
 adding if to check that y unequal to zero.
+
+
+#########################
+
+program swap.c
+
+cbmc swap.c --function swap --float-overflow-check --trace
+cbmc-bin/cbmc swap.c --function swap --nan-check --trace
+
+#########################
+
+program gcd.c
+
+cbmc gcd_while.c --function gcd --unwind 6 --bounds-check --unwinding-assertions --trace
+
+########################
+
+profram add_numbers.c
+
+firstNumber,secondNumber variables not defined.
+cbmc add_numbers.c --function add_numbers --signed-overflow-check --trace
+
+fix:
+1. defining and initializing variables. 
+2. handling overflow and underflow.
+
+
+
 
