@@ -1,47 +1,102 @@
-program comp_quot.c
+Answers are organized in lexicographic order
 
-Line to run: 
-cbmc comp_quot.c --function compute_quotient --div-by-zero-check --trace
-cbmc comp_quot.c --function compute_quotient  --signed-overflow-check --trace
+---------------------------------
+--------add_numbers.c------------
+---------------------------------
+The command used:
+	cbmc add_numbers.c --function add_numbers --signed-overflow-check --trace
 
-fix: 
-1. Check that y unequal to zero.
-2. Check x != -2147483648 || y != -1
+Errors:
+	firstNumber,secondNumber variables not defined.
 
-#########################
+Fixes:
+	1. defining and initializing variables. 
+	2. handling overflow and underflow.
+---------------------------------
+---------------------------------
 
-program comp_rem.c
+---------------------------------
+--------array_access.c-----------
+---------------------------------
+The command used:
+	
+Errors:
 
-Line to run:
-cbmc comp_rem.c --function compute_remainder --div-by-zero-check --trace
+Fixes:
 
-The fix:
-adding if to check that y unequal to zero.
+---------------------------------
+---------------------------------
+
+---------------------------------
+--------comp_quot.c--------------
+---------------------------------
+The command(s) used:
+	cbmc comp_quot.c --function compute_quotient --div-by-zero-check --trace
+	cbmc comp_quot.c --function compute_quotient  --signed-overflow-check --trace
+
+Errors:
+
+Fixes: 
+	1. Check that y unequal to zero.
+	2. Check x != -2147483648 || y != -1
+
+---------------------------------
+---------------------------------
 
 
-#########################
+---------------------------------
+--------omp_rem.c----------------
+---------------------------------
+The command used:
+	cbmc comp_rem.c --function compute_remainder --div-by-zero-check --trace
 
-program swap.c
+Errors:
 
+Fixes:
+	adding if to check that y unequal to zero.
+
+---------------------------------
+---------------------------------
+
+
+
+---------------------------------
+--------gcd_for.c----------------
+---------------------------------
+
+
+---------------------------------
+---------------------------------
+
+---------------------------------
+--------gcd_while.c--------------
+---------------------------------
+cbmc gcd_while.c --function gcd --unwind 6 --bounds-check --unwinding-assertions --trace
+
+---------------------------------
+---------------------------------
+
+
+
+---------------------------------
+--------reverse.c----------------
+---------------------------------
+
+
+---------------------------------
+---------------------------------
+
+
+---------------------------------
+--------swap.c-------------------
+---------------------------------
 cbmc swap.c --function swap --float-overflow-check --trace
 cbmc-bin/cbmc swap.c --function swap --nan-check --trace
 
-#########################
+---------------------------------
+---------------------------------
 
-program gcd.c
 
-cbmc gcd_while.c --function gcd --unwind 6 --bounds-check --unwinding-assertions --trace
-
-########################
-
-profram add_numbers.c
-
-firstNumber,secondNumber variables not defined.
-cbmc add_numbers.c --function add_numbers --signed-overflow-check --trace
-
-fix:
-1. defining and initializing variables. 
-2. handling overflow and underflow.
 
 
 
