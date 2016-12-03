@@ -1,8 +1,5 @@
 """
-Example of reduction of "job shop" scheduling to SMT (theory of integers).
-
-See the following (slides 16-20):
-http://fmv.jku.at/rerise14/rerise14-smt-slides-1.pdf
+Example of reduction of "job shop" scheduling to SMT (theory of integers)
 """
 
 from z3 import *
@@ -20,6 +17,43 @@ jobs1 = [
     [(1, 7), (2, 6)],
 ]
 
+jobs2 = [
+    [(1, 2), (2, 1)],
+    [(1, 3), (2, 1)],
+    [(1, 2), (2, 3)],
+    [(1, 100)],
+]
+
+jobs3 = [
+    [(1, 2), (2, 1)],
+    [(1, 3), (2, 5), (1, 4)],
+    [(1, 7), (2, 6)],
+    [(1, 2), (2, 1)],
+    [(1, 3), (2, 5), (1, 4)],
+    [(1, 7), (2, 6)],
+]
+
+
+
+
+def get_id(x):
+    return Z3_get_ast_id(x.ctx_ref(), x.as_ast())
+
+
+def minimize_core(s, core):
+    """
+    Minimize given core (assumes it's given as a list)
+    """
+    for i in range(len(core)):
+        new_core = core[:i] + core[i+1:]
+        print "trying ", new_core
+        is_sat = s.check(new_core)
+        print is_sat
+        if is_sat == unsat:
+           return minimize_core(s, list(s.unsat_core()))
+    return core
+
+
 def schedule(jobs, time_limit=None):
     n_jobs = len(jobs)
 
@@ -31,12 +65,14 @@ def schedule(jobs, time_limit=None):
           for k in range(len(jobs[j]))]
          for j in range(n_jobs)]
 
+    f = [Bool('job_{}'.format(i)) for i in range(n_jobs)]
+
     print "t = ", t
     print
 
-    t_max = max(max(d for m, d in job) for job in jobs)
     if time_limit is None:
         time_limit = sum(sum(d for m, d in job) for job in jobs)
+    t_max = min(time_limit, max(max(d for m, d in job) for job in jobs))
     m = None
     while m is None and t_max <= time_limit:
         print "t_max = ", t_max
@@ -52,7 +88,7 @@ def schedule(jobs, time_limit=None):
                 # the k'th talk of job i must start after the k-1 task finished
                 s.add(t[j][k] >= t[j][k-1] + jobs[j][k-1][1])
             # the last task of job j must finish by time t_max
-            s.add(t[j][-1] + jobs[j][-1][1] <= t_max)
+            s.add(Or(Not(f[j]), t[j][-1] + jobs[j][-1][1] <= t_max))
 
         # machine constrains
         for j1 in range(n_jobs):
@@ -63,7 +99,7 @@ def schedule(jobs, time_limit=None):
                         t2 = t[j2][k2]
                         m1, d1 = jobs[j1][k1]
                         m2, d2 = jobs[j2][k2]
-                        if m1 == m2 and False:
+                        if m1 == m2:
                             # two tasks on the same machine must not overlap
                             s.add(Or(t2 >= t1 + d1,
                                      t1 >= t2 + d2))
@@ -72,7 +108,7 @@ def schedule(jobs, time_limit=None):
         print s
         print
 
-        res = s.check()
+        res = s.check(f)
         if res == sat:
             print "SAT\n"
             m = s.model()
@@ -84,8 +120,15 @@ def schedule(jobs, time_limit=None):
             t_max += 1
 
     if m is None:
-        print "Time limit reached"
-        return None
+        print "Time limit reached, obtaining unsatisfiable core"
+        core = list(s.unsat_core())
+        print "unsat core:", core
+        #core = minimize_core(s, core)
+        #print "minimized unsat core:", core
+        core_ids = [get_id(x) for x in core]
+        core_jobs = [j for j in range(n_jobs) if get_id(f[j]) in core_ids]
+        print "core_jobs = ", core_jobs
+        return core_jobs
     else:
         # convert model to plan
         plan = [[m[t[j][k]].as_long()
@@ -96,6 +139,31 @@ def schedule(jobs, time_limit=None):
         print "plan = ", plan
         print
         return t_max, plan
+
+def old_print_plan(jobs, plan):
+    print "jobs:"
+    print  jobs
+    print
+
+    time_to_task = dict()
+    for j in range(len(jobs)):
+        for k in range(len(jobs[j])):
+            t = plan[j][k]
+            if t not in time_to_task:
+                time_to_task[t] = []
+            time_to_task[t].append((j, k))
+
+    print "plan:"
+    t_max = 0
+    for t in sorted(time_to_task.keys()):
+        for j, k in time_to_task[t]:
+            print "    At time {:3}, start task {:3} of job {:3} on machine {:3} with duration {:3} until time {}".format(
+                t, k, j, jobs[j][k][0], jobs[j][k][1], t + jobs[j][k][1]
+                )
+            t_max = max(t_max, t + jobs[j][k][1])
+    print "    Finish at time {}".format(t_max)
+    print
+
 
 def print_plan(jobs, plan):
     print "jobs:"
@@ -132,5 +200,5 @@ if __name__ == '__main__':
     t0, p0 = schedule(jobs0)
     print_plan(jobs0, p0)
 
-    #t1, p1 = schedule(jobs1)
-    #print_plan(jobs1, p1)
+    t1, p1 = schedule(jobs1)
+    print_plan(jobs1, p1)

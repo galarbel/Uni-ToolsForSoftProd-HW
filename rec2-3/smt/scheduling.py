@@ -97,6 +97,31 @@ def schedule(jobs, time_limit=None):
         print
         return t_max, plan
 
+def old_print_plan(jobs, plan):
+    print "jobs:"
+    print  jobs
+    print
+
+    time_to_task = dict()
+    for j in range(len(jobs)):
+        for k in range(len(jobs[j])):
+            t = plan[j][k]
+            if t not in time_to_task:
+                time_to_task[t] = []
+            time_to_task[t].append((j, k))
+
+    print "plan:"
+    t_max = 0
+    for t in sorted(time_to_task.keys()):
+        for j, k in time_to_task[t]:
+            print "    At time {:3}, start task {:3} of job {:3} on machine {:3} with duration {:3} until time {}".format(
+                t, k, j, jobs[j][k][0], jobs[j][k][1], t + jobs[j][k][1]
+                )
+            t_max = max(t_max, t + jobs[j][k][1])
+    print "    Finish at time {}".format(t_max)
+    print
+
+
 def print_plan(jobs, plan):
     print "jobs:"
     print  jobs
