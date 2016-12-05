@@ -1,9 +1,9 @@
+#include <math.h>
 int access(int x, int y) 
 {
 
   int i, flag;
   int a[32];
-
 
   while (x < y)
   {
@@ -24,5 +24,10 @@ int access(int x, int y)
     ++x;
   }
 
-  return a[x];
+  if(x<32 && x>=0){
+  	return a[x];
+  }else{
+	return;
+  } 
+ 
 }

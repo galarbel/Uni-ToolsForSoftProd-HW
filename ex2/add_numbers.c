@@ -1,15 +1,16 @@
-int add_numbers(int x, int y) 
-{
-  int sumOfTwoNumbers, firstNumber, secondNumber;
-  firstNumber = x;
-  secondNumber = y;
+#include <stdio.h>
+#include <limits.h>
 
-	//handling overflow and underflow
-	if((firstNumber > 0 && secondNumber > 2147483647 - firstNumber) || (firstNumber < 0 && secondNumber < -2147483648 - firstNumber)){
-		return;
+int add_numbers(int firstNumber, int secondNumber) 
+{
+  int sumOfTwoNumbers;
+
+  //handling overflow and underflow
+  if((secondNumber >= 0 && INT_MAX - secondNumber >= firstNumber) || (secondNumber < 0 && INT_MIN - secondNumber <= firstNumber)){
+  	sumOfTwoNumbers = firstNumber + secondNumber;
+  	return sumOfTwoNumbers;
 	}
-	else{
-	  sumOfTwoNumbers = firstNumber + secondNumber;
-	  return sumOfTwoNumbers;
-	}
+  return ;
 }
+
+
