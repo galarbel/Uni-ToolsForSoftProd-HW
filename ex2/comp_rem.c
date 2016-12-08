@@ -1,7 +1,7 @@
 int compute_remainder(int x, int y) 
 {
-	int remainder;
-
+  int remainder;
+  
 	if(y!=0){
 		remainder = x % y;
 		return remainder;
