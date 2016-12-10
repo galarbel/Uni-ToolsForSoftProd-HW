@@ -1,29 +1,35 @@
-#include <float.h>
-#include <stdio.h>
 #include <limits.h>
+#include <float.h>
 #include <math.h>
-int putd(double x, double y) { }
+
+
+int putd(double x, double y) { return 1; }
 
 void swap(double x, double y) 
 {
-  double x, y;
-  if((!(x == +INFINITY) || !(y == +INFINITY)) && (!(x == -INFINITY) || !(y == -INFINITY))){
-	  if((y <= 0 && FLT_MAX + y  >= x) || (y>0 && -FLT_MAX + y < x)){
-		x = x - y;
-	  }
-	  else {return ;}
-  }
-  else {return ;}
-  if((y >= 0 && FLT_MAX - y >= x) || (y<0 && -FLT_MAX - y <= x)){	
-  	y = x + y;
-	}
-  else {return ;}
-  if((!(x == +INFINITY) || !(y == +INFINITY)) && (!(x == -INFINITY) || !(y == -INFINITY))){
-	  if((x <= 0 && FLT_MAX + x  >= y) || (x>0 && -FLT_MAX + x < y)){
-		x = y - x;
-	  }
-	  else {return ;}
-  }
-  else {return ;}
+  //double x, y;
+
+if(isinf(x) || isinf(y) || x != x || y != y){
+	return -1;
+}
+
+if(isinf(x) || isinf(y) || x<=DBL_MIN+y || y<=DBL_MIN+x || isinf(x-y)){
+	return -1;
+}else{
+  x = x - y;
+}
+
+if(isinf(x) || isinf(y) || x>=DBL_MAX-y || y>=DBL_MAX-x || isinf(x+y)){
+	return -1;
+}else{
+  y = x + y;
+}
+
+if(isinf(x) || isinf(y) || y<=DBL_MIN+x || x<=DBL_MIN+y || isinf(y-x)){
+	return -1;
+}else{
+  x = y - x;
+}
+
   putd(x, y);
 }
