@@ -1,5 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+
+
+
+
+int checkIfSorted(int *arr, int num_of_elements)
+{
+	int i;
+	for(i=1; i<num_of_elements; i++)
+	{
+		if(num_of_elements > 1)
+		{
+			if(arr[i] < arr[i-1])
+			{
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+
+int checkBufferOverrun(int num_of_elements)
+{
+	if(num_of_elements > 99 || num_of_elements < 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -20,6 +56,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	
+	assert(checkBufferOverrun(num_of_elements)==1);
+
 	arr = malloc(sizeof(int)*num_of_elements);
 	
 	for(int i=0;i<num_of_elements;i++)
@@ -30,6 +68,7 @@ int main(int argc, char *argv[])
 			free(arr);
 			return -1; 
 		}
+		assert(checkBufferOverrun(i) == 1);
 		arr[i] = element;
 	}
 	
@@ -39,6 +78,8 @@ int main(int argc, char *argv[])
 		  {
 			   if (arr[j] > arr[j+1])
 			   {
+				   assert(checkBufferOverrun(i) == 1);
+				   assert(checkBufferOverrun(j) == 1);
 					tmp = arr[j+1];
 					arr[j+1] = arr[j];
 					arr[j] = tmp;
@@ -49,9 +90,11 @@ int main(int argc, char *argv[])
 	printf("\nThe array sorted.\n");
 	for(int i=0; i< num_of_elements;++i)
 	{
+		assert(checkBufferOverrun(i) == 1);
 		printf("%d ",arr[i]);
 	}
 	printf("\n");
+	assert(checkIfSorted(arr, num_of_elements) == 1);
 	free(arr);
 	
 	return 1;
