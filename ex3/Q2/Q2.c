@@ -79,18 +79,18 @@ int isSorted(int a[], int n) {
 }
 
 void sort(int a[], int n){
-	int i=0;
+	int i = 0;
 
-	while(!isSorted(a,n)){
+	while(isSorted(a,n) == 0){
 		if(i <= 100){
 			randomSort(a,n);
 		}
 		else{
 			bubbleSort(a,n);
-			assert(isSorted);
 		}
 		i++;
 	}
+	assert(isSorted(a,n) == 0);
 	
 }
 
