@@ -55,9 +55,9 @@ int checkIfSorted(int *arr, int num_of_elements)
 }
 
 
-int checkBufferOverrun(int num_of_elements)
+int checkBufferOverrun(int num,int len)
 {
-	if(num_of_elements > 99 || num_of_elements < 0)
+	if(num < 0 || num > len-1)
 	{
 		return 0;
 	}
@@ -91,7 +91,12 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	
-	assert(checkBufferOverrun(num_of_elements)==1);
+
+	
+	if(num_of_elements<0)
+	{
+		return -1;
+	}
 	
 	org_arr = malloc(sizeof(int)*num_of_elements);
 	// Get elements from the user
@@ -103,7 +108,7 @@ int main(int argc, char *argv[])
 			free(org_arr);
 			return -1; 
 		}
-		assert(checkBufferOverrun(i) == 1);
+		assert(checkBufferOverrun(i,num_of_elements) == 1);
 		org_arr[i] = element;
 	}
 	
@@ -111,7 +116,7 @@ int main(int argc, char *argv[])
 	arr = malloc(sizeof(int)*num_of_elements);
 	for(int i=0; i< num_of_elements;++i)
 	{
-		assert(checkBufferOverrun(i) == 1);
+		assert(checkBufferOverrun(i,num_of_elements) == 1);
 		arr[i] = org_arr[i];
 	}
 	
@@ -119,12 +124,12 @@ int main(int argc, char *argv[])
 	{
 		for (int j = 0; j < num_of_elements - 1 - i; ++j )
 		{
-			if( i == 4)		// Creating BUG.
+			if( i == 2)		// Creating BUG.
 			{
 				i = -1;
 			}
-			assert(checkBufferOverrun(i) == 1);
-			assert(checkBufferOverrun(j) == 1);
+			assert(checkBufferOverrun(i,num_of_elements) == 1);
+			assert(checkBufferOverrun(j,num_of_elements) == 1);
 			if (arr[j] > arr[j+1])
 			{
 				tmp = arr[j+1];
@@ -137,7 +142,7 @@ int main(int argc, char *argv[])
 	printf("\nThe array sorted.\n");
 	for(int i=0; i< num_of_elements;++i)
 	{
-		assert(checkBufferOverrun(i) == 1);
+		assert(checkBufferOverrun(i,num_of_elements) == 1);
 		printf("%d ",arr[i]);
 	}
 	printf("\n");

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <klee/klee.h>
 
+#define num_of_elements 5
 
 int checkPermutation1(int* a, int* b, int n)
 {
@@ -38,12 +40,12 @@ int checkPermutation1(int* a, int* b, int n)
 }
 
 
-int checkIfSorted(int *arr, int num_of_elements)
+int checkIfSorted(int *arr, int num)
 {
 	int i;
-	for(i=1; i<num_of_elements; i++)
+	for(i=1; i<num; i++)
 	{
-		if(num_of_elements > 1)
+		if(num > 1)
 		{
 			if(arr[i] < arr[i-1])
 			{
@@ -72,35 +74,44 @@ int checkBufferOverrun(int num,int len)
 
 int main(int argc, char *argv[])
 {
-	int num_of_elements;
+	//int num_of_elements;
 	int element,tmp;
-	int *org_arr;
-	int *arr;
+	//int *org_arr;
+	//int *arr;
 	
 	if(argc != 1)
 	{
-		printf("The program doesn't support any arguments");
+		//printf("The program doesn't support any arguments");
 		return -1;
 	}
 	
-	printf("please enter the number of elements you want to enter:");
+	//printf("please enter the number of elements you want to enter:");
 	//Get the number of elements.
+	
+	
+	//klee_make_symbolic(&num_of_elements,sizeof(num_of_elements),"num_of_elements");
+	/*
 	if(scanf("%d",&num_of_elements) != 1)
 	{
 		printf("Illegal input, please enter an integer.");
 		return -1;
 	}
+	*/
 	
-
-	if(num_of_elements<0)
+	if(num_of_elements < 0 )
 	{
 		return -1;
 	}
 	
-	org_arr = malloc(sizeof(int)*num_of_elements);
+	
+	//org_arr = malloc(sizeof(int)*num_of_elements);
+	int org_arr[num_of_elements];
+	klee_make_symbolic(org_arr,sizeof(org_arr),"org_arr");
 	// Get elements from the user
+	/*
 	for(int i=0;i<num_of_elements;i++)
 	{
+		
 		printf("please enter the element %d: ",i);
 		if(scanf("%d",&element) != 1)
 		{
@@ -110,52 +121,44 @@ int main(int argc, char *argv[])
 		assert(checkBufferOverrun(i,num_of_elements) == 1);
 		org_arr[i] = element;
 	}
+	*/
 	
 	// Copy the original array.
-	arr = malloc(sizeof(int)*num_of_elements);
+	int arr[num_of_elements];
+	//arr = malloc(sizeof(int)*num_of_elements);
 	for(int i=0; i< num_of_elements;++i)
 	{
 		assert(checkBufferOverrun(i,num_of_elements) == 1);
 		arr[i] = org_arr[i];
 	}
 	
+	//making bubble sort
 	for (int i = 0; i < num_of_elements - 1; ++i)
 	{
 		for (int j = 0; j < num_of_elements - 1 - i; ++j )
 		{
-			if( j == 3)		// creating BUG.
+			if (arr[j] > arr[j+1])
 			{
 				assert(checkBufferOverrun(i,num_of_elements) == 1);
 				assert(checkBufferOverrun(j,num_of_elements) == 1);
 				tmp = arr[j+1];
 				arr[j+1] = arr[j];
-				arr[j+1] = tmp;
-			}
-			else
-			{
-				assert(checkBufferOverrun(i,num_of_elements) == 1);
-				assert(checkBufferOverrun(j,num_of_elements) == 1);
-				if (arr[j] > arr[j+1])
-				{
-					tmp = arr[j+1];
-					arr[j+1] = arr[j];
-					arr[j] = tmp;
-				}
+				arr[j] = tmp;
 			}
 		}
 	}
 	
-	printf("\nThe array sorted.\n");
+	//printf("\nThe array sorted.\n");
 	for(int i=0; i< num_of_elements;++i)
 	{
 		assert(checkBufferOverrun(i,num_of_elements) == 1);
-		printf("%d ",arr[i]);
+		//printf("%d ",arr[i]);
 	}
-	printf("\n");
+	//printf("\n");
 	assert(checkIfSorted(arr, num_of_elements) == 1);
 	assert(checkPermutation1(arr, org_arr, num_of_elements) == 1);
-	free(arr);
-	free(org_arr);
+	//free(arr);
+	//free(org_arr);
 	
 	return 1;
 	

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-
+#include <klee/klee.h>
 
 int checkPermutation1(int* a, int* b, int n)
 {
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 	{
 		for (int j = 0; j < num_of_elements - 1 - i; ++j )
 		{
-			if( j == 3)		// creating BUG.
+			if( j == 6)		// creating BUG.
 			{
 				assert(checkBufferOverrun(i,num_of_elements) == 1);
 				assert(checkBufferOverrun(j,num_of_elements) == 1);
